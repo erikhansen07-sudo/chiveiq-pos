@@ -1,0 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap');
+@import './fonts.css';
+@import './tailwind.css';
+@import './theme.css';
+
+/* ── ChiveIQ Global Overrides ── */
+body {
+  font-family: 'Sora', sans-serif !important;
+  background-color: #f4f1e8;
+}
+
+/* DM Mono for data labels, badges, monospace elements */
+.font-mono, code, pre, .tabular-nums {
+  font-family: 'DM Mono', monospace !important;
+}
