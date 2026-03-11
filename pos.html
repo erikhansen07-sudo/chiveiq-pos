@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>POS System — ChiveIQ</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+      background: #0a0a0a;
+      color: #f0ebe0;
+      line-height: 1.6;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      height: 100vh;
+      gap: 1px;
+      background: rgba(43, 168, 84, 0.1);
+    }
+
+    /* MENU SECTION */
+    .menu-section {
+      padding: 24px;
+      overflow-y: auto;
+      background: #0a0a0a;
+      border-right: 1px solid rgba(43, 168, 84, 0.2);
+    }
+
+    .search-box {
+      margin-bottom: 32px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 12px 16px;
+      background: #1a1814;
+      border: 1px solid rgba(43, 168, 84, 0.2);
+      border-radius: 8px;
+      color: #f0ebe0;
+      font-size: 14px;
+    }
+
+    .search-box input::placeholder {
+      color: #717182;
+    }
+
+    .categories {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+
+    .category-btn {
+      padding: 8px 16px;
+      border: 1px solid rgba(43, 168, 84, 0.2);
+      background: transparent;
+      color: #a8a8a8;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .category-btn.active {
+      background: #2ba854;
+      color: #0a0a0a;
+      border-color: #2ba854;
+    }
+
+    .category-btn:hover:not(.active) {
+      border-color: #2ba854;
+      color: #2ba854;
+    }
+
+    .menu-items {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 12px;
+    }
+
+    .menu-item {
+      padding: 16px;
+      background: rgba(43, 168, 84, 0.05);
+      border: 1px solid rgba(43, 168, 84, 0.2);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .menu-item:hover {
+      background: rgba(43, 168, 84, 0.15);
+      border-color: #2ba854;
+    }
+
+    .menu-item-name {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #f0ebe0;
+    }
+
+    .menu-item-price {
+      font-size: 16px;
+      font-weight: 700;
+      color: #2ba854;
+    }
+
+    /* ORDER SECTION */
+    .order-section {
+      background: #0a0a0a;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      border-left: 1px solid rgba(43, 168, 84, 0.2);
+    }
+
+    .order-header {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      color: #2ba854;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 12px;
+    }
+
+    .order-items {
+      flex: 1;
+      overflow-y: auto;
+      margin-bottom: 24px;
+    }
+
+    .order-item {
+      padding: 12px;
+      background: rgba(43, 168, 84, 0.05);
+      border-left: 3px solid #2ba854;
+      margin-bottom: 8px;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+
+    .order-item-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .order-item-name {
+      font-weight: 600;
+    }
+
+    .order-item-price {
+      color: #2ba854;
+      font-weight: 700;
+    }
+
+    .order-item-qty {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #717182;
+    }
+
+    .qty-btn {
+      width: 20px;
+      height: 20px;
+      border: 1px solid #717182;
+      background: transparent;
+      color: #a8a8a8;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 11px;
+      transition: all 0.2s;
+    }
+
+    .qty-btn:hover {
+      border-color: #2ba854;
+      color: #2ba854;
+    }
+
+    .order-totals {
+      padding-top: 16px;
+      border-top: 1px solid rgba(43, 168, 84, 0.2);
+      margin-bottom: 16px;
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+
+    .total-row.final {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(43, 168, 84, 0.1);
+      font-size: 16px;
+      font-weight: 700;
+      color: #2ba854;
+    }
+
+    .checkout-btn {
+      width: 100%;
+      padding: 14px;
+      background: #2ba854;
+      color: #0a0a0a;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .checkout-btn:hover {
+      opacity: 0.9;
+    }
+
+    @media (max-width: 1024px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+
+      .menu-section {
+        border-right: none;
+        border-bottom: 1px solid rgba(43, 168, 84, 0.2);
+      }
+
+      .order-section {
+        border-left: none;
+        border-top: 1px solid rgba(43, 168, 84, 0.2);
+      }
+    }
+
+    /* BACK LINK */
+    .back-link {
+      position: absolute;
+      top: 24px;
+      left: 24px;
+      color: #2ba854;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .back-link:hover {
+      color: #1e7145;
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="back-link">← Back to Modules</a>
+
+  <div class="container">
+    <div class="menu-section">
+      <div class="search-box">
+        <input type="text" placeholder="Search menu items...">
+      </div>
+
+      <div class="categories">
+        <button class="category-btn active">All</button>
+        <button class="category-btn">Burgers</button>
+        <button class="category-btn">Sides</button>
+        <button class="category-btn">Drinks</button>
+        <button class="category-btn">Desserts</button>
+      </div>
+
+      <div class="menu-items">
+        <div class="menu-item">
+          <div class="menu-item-name">Classic Burger</div>
+          <div class="menu-item-price">$8.99</div>
+        </div>
+        <div class="menu-item">
+          <div class="menu-item-name">Cheeseburger</div>
+          <div class="menu-item-price">$9.99</div>
+        </div>
+        <div class="menu-item">
+          <div class="menu-item-name">Bacon Burger</div>
+          <div class="menu-item-price">$10.99</div>
+        </div>
+        <div class="menu-item">
+          <div class="menu-item-name">French Fries</div>
+          <div class="menu-item-price">$3.49</div>
+        </div>
+        <div class="menu-item">
+          <div class="menu-item-name">Onion Rings</div>
+          <div class="menu-item-price">$4.49</div>
+        </div>
+        <div class="menu-item">
+          <div class="menu-item-name">Soft Drink</div>
+          <div class="menu-item-price">$2.99</div>
+        </div>
+        <div class="menu-item">
+          <div class="menu-item-name">Milkshake</div>
+          <div class="menu-item-price">$5.99</div>
+        </div>
+        <div class="menu-item">
+          <div class="menu-item-name">Ice Cream</div>
+          <div class="menu-item-price">$3.99</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="order-section">
+      <div class="order-header">Order #2847</div>
+
+      <div class="order-items">
+        <div class="order-item">
+          <div class="order-item-header">
+            <span class="order-item-name">Classic Burger</span>
+            <span class="order-item-price">$8.99</span>
+          </div>
+          <div class="order-item-qty">
+            <button class="qty-btn">−</button>
+            <span>1</span>
+            <button class="qty-btn">+</button>
+          </div>
+        </div>
+
+        <div class="order-item">
+          <div class="order-item-header">
+            <span class="order-item-name">French Fries</span>
+            <span class="order-item-price">$3.49</span>
+          </div>
+          <div class="order-item-qty">
+            <button class="qty-btn">−</button>
+            <span>2</span>
+            <button class="qty-btn">+</button>
+          </div>
+        </div>
+
+        <div class="order-item">
+          <div class="order-item-header">
+            <span class="order-item-name">Soft Drink</span>
+            <span class="order-item-price">$2.99</span>
+          </div>
+          <div class="order-item-qty">
+            <button class="qty-btn">−</button>
+            <span>1</span>
+            <button class="qty-btn">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="order-totals">
+        <div class="total-row">
+          <span>Subtotal</span>
+          <span>$19.46</span>
+        </div>
+        <div class="total-row">
+          <span>Tax (8%)</span>
+          <span>$1.56</span>
+        </div>
+        <div class="total-row final">
+          <span>Total</span>
+          <span>$21.02</span>
+        </div>
+      </div>
+
+      <button class="checkout-btn">Complete Order</button>
+    </div>
+  </div>
+</body>
+</html>
